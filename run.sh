@@ -1,6 +1,3 @@
-cd collectd-api && \
-  gradle jar && \
-  cd .. && \
-  cp collectd-api/build/libs/collectd-api.jar . && \
+./build-collectd-api.sh && \
   docker build -t collectd . && \
   docker run collectd
