@@ -50,6 +50,7 @@ collectd -C collecd.conf
 ```
 
 Alternative way (for centos):
+
 1. Put `deploy.sh`, `collectd-api.jar`, `collectd.conf` somewhere on server
 2. Run `./deploy.sh`
 
