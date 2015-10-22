@@ -31,6 +31,7 @@ Then configure it:
 As you see, with `java` plugin here we have to load and configure `Kafka` plugin. Options:
 - BrokerList: list of kafka brokers separated with comma. Default: `"localhost:9292"`
 - BatchSize: kafka producer batch size. Default: `1000`
+- Topic: kafka topic. Default: `"collectd"`
 
 ## Run
 
@@ -38,7 +39,7 @@ As you see, with `java` plugin here we have to load and configure `Kafka` plugin
 
 Prerequisites:
 - JVM
-- Collectd precompiled with java plugin (in rpm-based systems package name is `collectd-java.x86_64`)
+- Collectd precompiled with java plugin (in rpm-based systems: `yum install collectd-java.x86_64`)
 
 Launching:
 
