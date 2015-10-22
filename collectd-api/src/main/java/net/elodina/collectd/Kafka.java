@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 public class Kafka implements CollectdWriteInterface, CollectdConfigInterface {
     private String brokerList = "localhost:9292";
     private Integer batchSize = 1000;
+    private String topic = "collectd";
     private String hostname;
     private Producer<String, byte[]> kafkaProducer;
     private static final SpecificDatumWriter<Metric> avroEventWriter = new SpecificDatumWriter<>(Metric.SCHEMA$);
@@ -43,6 +44,9 @@ public class Kafka implements CollectdWriteInterface, CollectdConfigInterface {
             }
             if(Objects.equals(conf.getKey(), "BatchSize")) {
                 this.batchSize = conf.getValues().get(0).getNumber().intValue();
+            }
+            if(Objects.equals(conf.getKey(), "Topic")) {
+                this.topic = conf.getValues().get(0).getString();
             }
         }
         this.kafkaProducer = createProducer();
@@ -80,7 +84,7 @@ public class Kafka implements CollectdWriteInterface, CollectdConfigInterface {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ProducerRecord<String, byte[]> producerRecord = new ProducerRecord<>("collectd", this.hostname, stream.toByteArray());
+        ProducerRecord<String, byte[]> producerRecord = new ProducerRecord<>(this.topic, this.hostname, stream.toByteArray());
         try {
             this.kafkaProducer.send(producerRecord).get();
         } catch (InterruptedException | ExecutionException e) {
