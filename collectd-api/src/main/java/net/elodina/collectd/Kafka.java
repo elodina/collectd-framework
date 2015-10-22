@@ -10,6 +10,8 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.collectd.api.*;
 
 import java.io.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
@@ -19,13 +21,19 @@ import java.util.stream.Collectors;
 public class Kafka implements CollectdWriteInterface, CollectdConfigInterface {
     private String brokerList = "localhost:9292";
     private Integer batchSize = 1000;
+    private String hostname;
     private Producer<String, byte[]> kafkaProducer;
     private static final SpecificDatumWriter<Metric> avroEventWriter = new SpecificDatumWriter<>(Metric.SCHEMA$);
     private static final EncoderFactory avroEncoderFactory = EncoderFactory.get();
 
-    public Kafka() throws Exception {
+    public Kafka() {
         Collectd.registerConfig("Kafka", this);
         Collectd.registerWrite("Kafka", this);
+        try {
+            hostname = InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
     }
 
     public int config(OConfigItem ci) {
@@ -37,7 +45,7 @@ public class Kafka implements CollectdWriteInterface, CollectdConfigInterface {
                 this.batchSize = conf.getValues().get(0).getNumber().intValue();
             }
         }
-        kafkaProducer = createProducer();
+        this.kafkaProducer = createProducer();
         return 0;
     }
 
@@ -72,9 +80,9 @@ public class Kafka implements CollectdWriteInterface, CollectdConfigInterface {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ProducerRecord<String, byte[]> producerRecord = new ProducerRecord<>("collectd", metric.getType(), stream.toByteArray());
+        ProducerRecord<String, byte[]> producerRecord = new ProducerRecord<>("collectd", this.hostname, stream.toByteArray());
         try {
-            kafkaProducer.send(producerRecord).get();
+            this.kafkaProducer.send(producerRecord).get();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
