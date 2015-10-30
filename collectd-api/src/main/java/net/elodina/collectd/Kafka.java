@@ -12,6 +12,7 @@ import org.collectd.api.*;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
@@ -55,7 +56,10 @@ public class Kafka implements CollectdWriteInterface, CollectdConfigInterface {
 
     public int write(ValueList vl) {
         DataSet dataset = vl.getDataSet();
-        List<Float> values = vl.getValues().stream().map(Number::floatValue).collect(Collectors.toList());
+        List<Float> values = new ArrayList<>();
+        for (Number num : vl.getValues()) {
+            values.add(num.floatValue());
+        }
         Metric metric = new Metric(dataset.getType(), values);
         produce(metric);
         return 0;
