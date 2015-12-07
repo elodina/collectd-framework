@@ -4,6 +4,10 @@
   "namespace": "net.elodina.collectd",
   "fields": [
     {"name": "type", "type": "string"},
-    {"name": "values", "type": {"type": "array", "items": "float"}}
+    {"name": "plugin", "type": "string"},
+    {"name": "values", "type": {"type": "array", "items": "double"}},
+    {"name": "time", "type": "long"},
+    {"name": "pluginInstance", "type": ["null", "string"], "default": null},
+    {"name": "typeInstance", "type": ["null", "string"], "default": null}
   ]
 }
