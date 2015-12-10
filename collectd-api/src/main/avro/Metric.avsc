@@ -4,7 +4,7 @@
   "namespace": "net.elodina.collectd",
   "fields": [
     {"name": "type", "type": "string"},
-    {"name": "plugin", "type": "string"},
+    {"name": "hostname", "type": "string"},
     {"name": "values", "type": {"type": "array", "items": "double"}},
     {"name": "time", "type": "long"},
     {"name": "pluginInstance", "type": ["null", "string"], "default": null},
