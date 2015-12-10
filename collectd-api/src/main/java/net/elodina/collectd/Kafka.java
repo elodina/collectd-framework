@@ -55,12 +55,13 @@ public class Kafka implements CollectdWriteInterface, CollectdConfigInterface {
     }
 
     public int write(ValueList vl) {
-        DataSet dataset = vl.getDataSet();
-        List<Float> values = new ArrayList<>();
+        List<Double> values = new ArrayList<>();
         for (Number num : vl.getValues()) {
-            values.add(num.floatValue());
+            values.add(num.doubleValue());
         }
-        Metric metric = new Metric(dataset.getType(), values);
+        //add all the data
+        Metric metric = new Metric(vl.getType(), vl.getPlugin(), values,
+                vl.getTime(), vl.getPluginInstance(), vl.getTypeInstance());
         produce(metric);
         return 0;
     }
