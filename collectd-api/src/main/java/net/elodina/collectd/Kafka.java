@@ -60,9 +60,9 @@ public class Kafka implements CollectdWriteInterface, CollectdConfigInterface {
             values.add(num.doubleValue());
         }
         //add all the data
-        Metric metric = new Metric(vl.getType(), vl.getPlugin(), values,
+        Metric metric = new Metric(vl.getType(), this.hostname, values,
                 vl.getTime(), vl.getPluginInstance(), vl.getTypeInstance());
-        produce(metric);
+        produce(metric, vl.getPlugin());
         return 0;
     }
 
@@ -79,7 +79,7 @@ public class Kafka implements CollectdWriteInterface, CollectdConfigInterface {
         return new KafkaProducer<>(props);
     }
 
-    private void produce(Metric metric) {
+    private void produce(Metric metric, String plugin) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         BinaryEncoder binaryEncoder = avroEncoderFactory.binaryEncoder(stream, null);
         try {
@@ -89,7 +89,7 @@ public class Kafka implements CollectdWriteInterface, CollectdConfigInterface {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        ProducerRecord<String, byte[]> producerRecord = new ProducerRecord<>(this.topic, this.hostname, stream.toByteArray());
+        ProducerRecord<String, byte[]> producerRecord = new ProducerRecord<>(this.topic, plugin, stream.toByteArray());
         try {
             this.kafkaProducer.send(producerRecord).get();
         } catch (InterruptedException | ExecutionException e) {
