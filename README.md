@@ -32,6 +32,7 @@ As you see, with `java` plugin here we have to load and configure `Kafka` plugin
 - BrokerList: list of kafka brokers separated with comma. Default: `"localhost:9292"`
 - BatchSize: kafka producer batch size. Default: `1000`
 - Topic: kafka topic. Default: `"collectd"`
+- Namespace: namespace to report for. Defaults to no namespace.
 
 ## Run
 
