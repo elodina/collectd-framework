@@ -1,3 +1,5 @@
+#!/bin/sh
+
 cd collectd-api && \
   gradle jar && \
   cd .. && \

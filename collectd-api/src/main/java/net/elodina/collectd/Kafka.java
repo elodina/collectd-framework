@@ -24,6 +24,7 @@ public class Kafka implements CollectdWriteInterface, CollectdConfigInterface {
     private Integer batchSize = 1000;
     private String topic = "collectd";
     private String hostname;
+    private String namespace;
     private Producer<String, byte[]> kafkaProducer;
     private static final SpecificDatumWriter<Metric> avroEventWriter = new SpecificDatumWriter<>(Metric.SCHEMA$);
     private static final EncoderFactory avroEncoderFactory = EncoderFactory.get();
@@ -49,6 +50,9 @@ public class Kafka implements CollectdWriteInterface, CollectdConfigInterface {
             if(Objects.equals(conf.getKey(), "Topic")) {
                 this.topic = conf.getValues().get(0).getString();
             }
+            if(Objects.equals(conf.getKey(), "Namespace")) {
+                this.namespace = conf.getValues().get(0).getString();
+            }
         }
         this.kafkaProducer = createProducer();
         return 0;
@@ -60,7 +64,7 @@ public class Kafka implements CollectdWriteInterface, CollectdConfigInterface {
             values.add(num.doubleValue());
         }
         //add all the data
-        Metric metric = new Metric(vl.getType(), this.hostname, values,
+        Metric metric = new Metric(vl.getType(), this.hostname, this.namespace, values,
                 vl.getTime(), vl.getPluginInstance(), vl.getTypeInstance());
         produce(metric, vl.getPlugin());
         return 0;
