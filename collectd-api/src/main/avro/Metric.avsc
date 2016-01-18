@@ -5,6 +5,7 @@
   "fields": [
     {"name": "type", "type": "string"},
     {"name": "hostname", "type": "string"},
+    {"name": "namespace", "type": ["null", "string"], "default": null},
     {"name": "values", "type": {"type": "array", "items": "double"}},
     {"name": "time", "type": "long"},
     {"name": "pluginInstance", "type": ["null", "string"], "default": null},
